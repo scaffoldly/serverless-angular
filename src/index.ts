@@ -8,6 +8,7 @@ import fs from "fs-extra";
 import { WorkspaceNodeModulesArchitectHost } from "@angular-devkit/architect/node";
 import { NodeJsSyncHost } from "@angular-devkit/core/node";
 import { workspaces } from "@angular-devkit/core";
+import { Architect } from "@angular-devkit/architect";
 // import { buildApplication } from "@angular-devkit/build-angular";
 // import { createBuilder } from "@angular-devkit/architect";
 
@@ -254,23 +255,27 @@ class ServerlessReact {
       );
     }
 
-    const project = workspace.projects.get(projectName);
-    if (!project) {
-      throw new Error(`${projectName} does not exist`);
-    }
+    // const project = workspace.projects.get(projectName);
+    // if (!project) {
+    //   throw new Error(`${projectName} does not exist`);
+    // }
 
-    const buildTarget = project.targets.get("build");
-    if (!buildTarget) {
-      throw new Error("build target does not exist");
-    }
+    // const buildTarget = project.targets.get("build");
+    // if (!buildTarget) {
+    //   throw new Error("build target does not exist");
+    // }
 
-    const builderInfo = await architectHost.resolveBuilder(buildTarget.builder);
+    // const builderInfo = await architectHost.resolveBuilder(buildTarget.builder);
 
-    console.log("!!! builderInfo", builderInfo);
+    // console.log("!!! builderInfo", builderInfo);
 
-    const builder = await architectHost.loadBuilder(builderInfo);
+    // const builder = await architectHost.loadBuilder(builderInfo);
 
-    console.log("!!! builder", builder);
+    // console.log("!!! builder", builder);
+
+    const architect = new Architect(architectHost);
+
+    await architect.scheduleTarget({ project: projectName, target: "build" });
 
     // const host = workspaces.createWorkspaceHost(new NodeJsSyncHost());
 
