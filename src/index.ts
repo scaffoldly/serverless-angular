@@ -241,7 +241,10 @@ class ServerlessReact {
 
     const { workspace } = await workspaces.readWorkspace(angularJsonPath, host);
 
-    const architectHost = new WorkspaceNodeModulesArchitectHost(workspace, "/");
+    const architectHost = new WorkspaceNodeModulesArchitectHost(
+      workspace,
+      this.serverlessConfig.servicePath
+    );
 
     const { project: projectName } = this.pluginConfig;
 
