@@ -4,11 +4,12 @@ import fs from "fs-extra";
 // import { buildApplication } from "@angular-devkit/build-angular";
 // import application from "@schematics/angular/application";
 // import readWorkspace from "@angular-devkit/build-angular";
-// import { buildApplication } from "@angular-devkit/build-angular";
 // import { createBuilder } from "@angular-devkit/architect";
-// import { WorkspaceNodeModulesArchitectHost } from "@angular-devkit/architect/node";
+import { WorkspaceNodeModulesArchitectHost } from "@angular-devkit/architect/node";
 import { NodeJsSyncHost } from "@angular-devkit/core/node";
 import { workspaces } from "@angular-devkit/core";
+// import { buildApplication } from "@angular-devkit/build-angular";
+// import { createBuilder } from "@angular-devkit/architect";
 
 type PluginName = "angular";
 const PLUGIN_NAME: PluginName = "angular";
@@ -238,11 +239,9 @@ class ServerlessReact {
       this.pluginConfig.configFile || "angular.json"
     );
 
-    console.log("!!!! angularJsonPath", angularJsonPath);
-
     const { workspace } = await workspaces.readWorkspace(angularJsonPath, host);
 
-    console.log("!!!! workspace", workspace);
+    const architectHost = new WorkspaceNodeModulesArchitectHost(workspace, "/");
 
     const { project: projectName } = this.pluginConfig;
 
@@ -257,14 +256,33 @@ class ServerlessReact {
       throw new Error(`${projectName} does not exist`);
     }
 
-    console.log("!!!! project", project);
-
     const buildTarget = project.targets.get("build");
     if (!buildTarget) {
       throw new Error("build target does not exist");
     }
 
-    console.log("!!!! buildTarget", buildTarget);
+    const builderInfo = await architectHost.resolveBuilder(buildTarget.builder);
+
+    console.log("!!! builderInfo", builderInfo);
+
+    const builder = await architectHost.loadBuilder(builderInfo);
+
+    console.log("!!! builder", builder);
+
+    // const host = workspaces.createWorkspaceHost(new NodeJsSyncHost());
+
+    // const { workspace } = await workspaces.readWorkspace(angularJsonPath, host);
+
+    // console.log("!!!! workspace", workspace);
+
+    // const project = workspace.projects.get(projectName);
+    // if (!project) {
+    //   throw new Error(`${projectName} does not exist`);
+    // }
+
+    // console.log("!!!! project", project);
+
+    // console.log("!!!! buildTarget", buildTarget);
 
     // buildTarget.options.optimization = true;
     // buildApplication({});
