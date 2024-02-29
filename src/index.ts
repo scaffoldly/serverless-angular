@@ -21,6 +21,7 @@ type PluginConfig = {
   buildSystem?: BuildSystem; // Default will be detected on node_modules
   outputDirectory?: string; // Default is .angular
   reloadHandler?: boolean; // Default is false
+  configFile?: string; // Default is ./angular.json
   project?: string;
 };
 
@@ -231,7 +232,17 @@ class ServerlessReact {
     _watch: boolean
   ): Promise<void> => {
     const host = workspaces.createWorkspaceHost(new NodeJsSyncHost());
-    const { workspace } = await workspaces.readWorkspace(".", host);
+
+    const angularJsonPath = path.join(
+      this.serverlessConfig.servicePath,
+      this.pluginConfig.configFile || "angular.json"
+    );
+
+    console.log("!!!! angularJsonPath", angularJsonPath);
+
+    const { workspace } = await workspaces.readWorkspace(angularJsonPath, host);
+
+    console.log("!!!! workspace", workspace);
 
     const { project: projectName } = this.pluginConfig;
 
