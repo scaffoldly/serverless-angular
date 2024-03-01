@@ -8,7 +8,7 @@ import fs from "fs-extra";
 import { WorkspaceNodeModulesArchitectHost } from "@angular-devkit/architect/node";
 import { NodeJsSyncHost } from "@angular-devkit/core/node";
 import { workspaces } from "@angular-devkit/core";
-// import { Architect } from "@angular-devkit/architect";
+import { Architect } from "@angular-devkit/architect";
 // import {
 //   ApplicationBuilderOptions,
 //   buildApplication,
@@ -283,7 +283,7 @@ class ServerlessReact {
 
     // console.log("!!! builder", builder);
 
-    // const architect = new Architect(architectHost);
+    const architect = new Architect(architectHost);
 
     const projectMetadata = await architectHost.getProjectMetadata(projectName);
 
@@ -302,15 +302,15 @@ class ServerlessReact {
       throw new Error(`targetOptions does not exist`);
     }
 
-    console.log(targetOptions);
+    console.log("!!! targetOptions", targetOptions);
 
-    // const scheduleTargetRun = await architect.scheduleTarget({
-    //   project: projectName,
-    //   target: "build",
-    // });
+    const scheduleTargetRun = await architect.scheduleTarget({
+      project: projectName,
+      target: "build",
+    });
 
-    // console.log("!!! scheduleTargetRun", scheduleTargetRun);
-    // await scheduleTargetRun.result;
+    console.log("!!! scheduleTargetRun", scheduleTargetRun);
+    await scheduleTargetRun.result;
 
     // const scheduleBuilderRun = await architect.scheduleBuilder(
     //   buildTarget.builder,
