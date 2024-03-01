@@ -255,17 +255,17 @@ class ServerlessReact {
       );
     }
 
-    // const project = workspace.projects.get(projectName);
-    // if (!project) {
-    //   throw new Error(`${projectName} does not exist`);
-    // }
+    const project = workspace.projects.get(projectName);
+    if (!project) {
+      throw new Error(`${projectName} does not exist`);
+    }
 
-    // const buildTarget = project.targets.get("build");
-    // if (!buildTarget) {
-    //   throw new Error("build target does not exist");
-    // }
+    const buildTarget = project.targets.get("build");
+    if (!buildTarget) {
+      throw new Error("build target does not exist");
+    }
 
-    // const builderInfo = await architectHost.resolveBuilder(buildTarget.builder);
+    const builderInfo = await architectHost.resolveBuilder(buildTarget.builder);
 
     // console.log("!!! builderInfo", builderInfo);
 
@@ -275,7 +275,19 @@ class ServerlessReact {
 
     const architect = new Architect(architectHost);
 
-    await architect.scheduleTarget({ project: projectName, target: "build" });
+    const scheduleTargetRun = await architect.scheduleTarget({
+      project: projectName,
+      target: "build",
+    });
+
+    console.log("!!! scheduleTargetRun", scheduleTargetRun);
+
+    const scheduleBuilderRun = await architect.scheduleBuilder(
+      builderInfo.builderName,
+      {}
+    );
+
+    console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
 
     // const host = workspaces.createWorkspaceHost(new NodeJsSyncHost());
 
