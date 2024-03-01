@@ -269,9 +269,9 @@ class ServerlessReact {
 
     console.log("!!! builderInfo", builderInfo);
 
-    // const builder = await architectHost.loadBuilder(builderInfo);
+    const builder = await architectHost.loadBuilder(builderInfo);
 
-    // console.log("!!! builder", builder);
+    console.log("!!! builder", builder);
 
     const architect = new Architect(architectHost);
 
