@@ -313,15 +313,14 @@ class ServerlessReact {
     const scheduleTargetLastOutput = await scheduleTargetRun.lastOutput;
     console.log("!!! scheduleTargetLastOutput", scheduleTargetLastOutput);
 
-    // const scheduleBuilderRun = await architect.scheduleBuilder(
-    //   buildTarget.builder,
-    //   targetOptions,
-    //   { target: projectName }
-    // );
+    const scheduleBuilderRun = await architect.scheduleBuilder(
+      buildTarget.builder,
+      targetOptions
+    );
 
-    // console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
-    // const scheduleBuilderRunResult = await scheduleBuilderRun.result;
-    // console.log("!!! scheduleBuilderRunResult", scheduleBuilderRunResult);
+    console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
+    const scheduleBuilderLastOutput = await scheduleBuilderRun.lastOutput;
+    console.log("!!! scheduleBuilderLastOutput", scheduleBuilderLastOutput);
 
     // const host = workspaces.createWorkspaceHost(new NodeJsSyncHost());
 
