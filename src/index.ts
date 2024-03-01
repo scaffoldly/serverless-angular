@@ -304,18 +304,19 @@ class ServerlessReact {
 
     console.log("!!! targetOptions", targetOptions);
 
-    const scheduleTargetRun = await architect.scheduleTarget({
-      project: projectName,
-      target: "build",
-    });
+    // const scheduleTargetRun = await architect.scheduleTarget({
+    //   project: projectName,
+    //   target: "build",
+    // });
 
-    console.log("!!! scheduleTargetRun", scheduleTargetRun);
-    const scheduleTargetLastOutput = await scheduleTargetRun.lastOutput;
-    console.log("!!! scheduleTargetLastOutput", scheduleTargetLastOutput);
+    // console.log("!!! scheduleTargetRun", scheduleTargetRun);
+    // const scheduleTargetLastOutput = await scheduleTargetRun.lastOutput;
+    // console.log("!!! scheduleTargetLastOutput", scheduleTargetLastOutput);
 
     const scheduleBuilderRun = await architect.scheduleBuilder(
       buildTarget.builder,
-      targetOptions
+      targetOptions,
+      JSON.parse(JSON.stringify({ target: projectName })) // skip type checking
     );
 
     console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
