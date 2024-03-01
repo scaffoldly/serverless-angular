@@ -7,7 +7,7 @@ import fs from "fs-extra";
 // import { createBuilder } from "@angular-devkit/architect";
 import { WorkspaceNodeModulesArchitectHost } from "@angular-devkit/architect/node";
 import { NodeJsSyncHost } from "@angular-devkit/core/node";
-import { workspaces } from "@angular-devkit/core";
+import { workspaces, logging } from "@angular-devkit/core";
 import { Architect } from "@angular-devkit/architect";
 // import {
 //   ApplicationBuilderOptions,
@@ -293,35 +293,45 @@ class ServerlessReact {
 
     console.log("!!! projectMetadata", projectMetadata);
 
-    const targetOptions = await architectHost.getOptionsForTarget({
-      project: projectName,
-      target: "build",
-    });
-
-    if (!targetOptions) {
-      throw new Error(`targetOptions does not exist`);
-    }
-
-    console.log("!!! targetOptions", targetOptions);
-
-    // const scheduleTargetRun = await architect.scheduleTarget({
+    // const targetOptions = await architectHost.getOptionsForTarget({
+    //   configuration: "",
     //   project: projectName,
     //   target: "build",
     // });
 
-    // console.log("!!! scheduleTargetRun", scheduleTargetRun);
-    // const scheduleTargetLastOutput = await scheduleTargetRun.lastOutput;
-    // console.log("!!! scheduleTargetLastOutput", scheduleTargetLastOutput);
+    // if (!targetOptions) {
+    //   throw new Error(`targetOptions does not exist`);
+    // }
 
-    const scheduleBuilderRun = await architect.scheduleBuilder(
-      buildTarget.builder,
-      targetOptions,
-      JSON.parse(JSON.stringify({ target: projectName })) // skip type checking
+    // console.log("!!! targetOptions", targetOptions);
+
+    const logger = new logging.Logger(PLUGIN_NAME);
+    logger.subscribe((entry) => {
+      console.log(entry.message);
+    });
+
+    const scheduleTargetRun = await architect.scheduleTarget(
+      {
+        configuration: "",
+        project: projectName,
+        target: "build",
+      },
+      {},
+      { logger }
     );
 
-    console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
-    const scheduleBuilderLastOutput = await scheduleBuilderRun.lastOutput;
-    console.log("!!! scheduleBuilderLastOutput", scheduleBuilderLastOutput);
+    console.log("!!! scheduleTargetRun", scheduleTargetRun);
+    const scheduleTargetLastOutput = await scheduleTargetRun.lastOutput;
+    console.log("!!! scheduleTargetLastOutput", scheduleTargetLastOutput);
+
+    // const scheduleBuilderRun = await architect.scheduleBuilder(
+    //   buildTarget.builder,
+    //   targetOptions
+    // );
+
+    // console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
+    // const scheduleBuilderLastOutput = await scheduleBuilderRun.lastOutput;
+    // console.log("!!! scheduleBuilderLastOutput", scheduleBuilderLastOutput);
 
     // const host = workspaces.createWorkspaceHost(new NodeJsSyncHost());
 
