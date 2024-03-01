@@ -8,8 +8,11 @@ import fs from "fs-extra";
 import { WorkspaceNodeModulesArchitectHost } from "@angular-devkit/architect/node";
 import { NodeJsSyncHost } from "@angular-devkit/core/node";
 import { workspaces } from "@angular-devkit/core";
-import { Architect } from "@angular-devkit/architect";
-// import { buildApplication } from "@angular-devkit/build-angular";
+// import { Architect } from "@angular-devkit/architect";
+// import {
+//   ApplicationBuilderOptions,
+//   buildApplication,
+// } from "@angular-devkit/build-angular";
 // import { createBuilder } from "@angular-devkit/architect";
 
 type PluginName = "angular";
@@ -233,14 +236,19 @@ class ServerlessReact {
     _mode: BuildMode,
     _watch: boolean
   ): Promise<void> => {
-    const host = workspaces.createWorkspaceHost(new NodeJsSyncHost());
+    const host = new NodeJsSyncHost();
+
+    const workspaceHost = workspaces.createWorkspaceHost(host);
 
     const angularJsonPath = path.join(
       this.serverlessConfig.servicePath,
       this.pluginConfig.configFile || "angular.json"
     );
 
-    const { workspace } = await workspaces.readWorkspace(angularJsonPath, host);
+    const { workspace } = await workspaces.readWorkspace(
+      angularJsonPath,
+      workspaceHost
+    );
 
     const architectHost = new WorkspaceNodeModulesArchitectHost(
       workspace,
@@ -265,31 +273,51 @@ class ServerlessReact {
       throw new Error("build target does not exist");
     }
 
-    console.log("!!! buildTarget", buildTarget);
+    // console.log("!!! buildTarget", buildTarget);
 
-    const builderInfo = await architectHost.resolveBuilder(buildTarget.builder);
+    // const builderInfo = await architectHost.resolveBuilder(buildTarget.builder);
 
-    console.log("!!! builderInfo", builderInfo);
+    // console.log("!!! builderInfo", builderInfo);
 
-    const builder = await architectHost.loadBuilder(builderInfo);
+    // const builder = await architectHost.loadBuilder(builderInfo);
 
-    console.log("!!! builder", builder);
+    // console.log("!!! builder", builder);
 
-    const architect = new Architect(architectHost);
+    // const architect = new Architect(architectHost);
 
-    const scheduleTargetRun = await architect.scheduleTarget({
+    const projectMetadata = await architectHost.getProjectMetadata(projectName);
+
+    if (!projectMetadata) {
+      throw new Error(`projectMetadata does not exist`);
+    }
+
+    console.log("!!! projectMetadata", projectMetadata);
+
+    const targetOptions = await architectHost.getOptionsForTarget({
       project: projectName,
       target: "build",
     });
 
-    console.log("!!! scheduleTargetRun", scheduleTargetRun);
+    if (!targetOptions) {
+      throw new Error(`targetOptions does not exist`);
+    }
 
-    const scheduleBuilderRun = await architect.scheduleBuilder(
-      buildTarget.builder,
-      {}
-    );
+    console.log(targetOptions);
 
-    console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
+    // const scheduleTargetRun = await architect.scheduleTarget({
+    //   project: projectName,
+    //   target: "build",
+    // });
+
+    // console.log("!!! scheduleTargetRun", scheduleTargetRun);
+    // await scheduleTargetRun.result;
+
+    // const scheduleBuilderRun = await architect.scheduleBuilder(
+    //   buildTarget.builder,
+    //   {}
+    // );
+
+    // console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
 
     // const host = workspaces.createWorkspaceHost(new NodeJsSyncHost());
 
