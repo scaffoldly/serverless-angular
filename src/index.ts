@@ -310,14 +310,17 @@ class ServerlessReact {
     });
 
     console.log("!!! scheduleTargetRun", scheduleTargetRun);
-    await scheduleTargetRun.result;
+    const scheduleTargetRunResult = await scheduleTargetRun.result;
+    console.log("!!! scheduleTargetRunResult", scheduleTargetRunResult);
 
-    // const scheduleBuilderRun = await architect.scheduleBuilder(
-    //   buildTarget.builder,
-    //   {}
-    // );
+    const scheduleBuilderRun = await architect.scheduleBuilder(
+      buildTarget.builder,
+      {}
+    );
 
-    // console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
+    console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
+    const scheduleBuilderRunResult = await scheduleBuilderRun.result;
+    console.log("!!! scheduleBuilderRunResult", scheduleBuilderRunResult);
 
     // const host = workspaces.createWorkspaceHost(new NodeJsSyncHost());
 
