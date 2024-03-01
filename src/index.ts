@@ -265,6 +265,8 @@ class ServerlessReact {
       throw new Error("build target does not exist");
     }
 
+    console.log("!!! buildTarget", buildTarget);
+
     const builderInfo = await architectHost.resolveBuilder(buildTarget.builder);
 
     console.log("!!! builderInfo", builderInfo);
@@ -283,7 +285,7 @@ class ServerlessReact {
     console.log("!!! scheduleTargetRun", scheduleTargetRun);
 
     const scheduleBuilderRun = await architect.scheduleBuilder(
-      builderInfo.builderName,
+      buildTarget.builder,
       {}
     );
 
