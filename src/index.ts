@@ -1,19 +1,9 @@
 import path from "path";
 import fs from "fs-extra";
-// import { Schema } from "@angular-devkit/build-angular/src/builders/application/schema";
-// import { buildApplication } from "@angular-devkit/build-angular";
-// import application from "@schematics/angular/application";
-// import readWorkspace from "@angular-devkit/build-angular";
-// import { createBuilder } from "@angular-devkit/architect";
 import { WorkspaceNodeModulesArchitectHost } from "@angular-devkit/architect/node";
 import { NodeJsSyncHost } from "@angular-devkit/core/node";
 import { workspaces, logging } from "@angular-devkit/core";
 import { Architect } from "@angular-devkit/architect";
-// import {
-//   ApplicationBuilderOptions,
-//   buildApplication,
-// } from "@angular-devkit/build-angular";
-// import { createBuilder } from "@angular-devkit/architect";
 
 type PluginName = "angular";
 const PLUGIN_NAME: PluginName = "angular";
