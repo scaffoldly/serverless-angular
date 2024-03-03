@@ -4,6 +4,7 @@ import { WorkspaceNodeModulesArchitectHost } from "@angular-devkit/architect/nod
 import { NodeJsSyncHost } from "@angular-devkit/core/node";
 import { workspaces, logging } from "@angular-devkit/core";
 import { Architect } from "@angular-devkit/architect";
+import { firstValueFrom } from "rxjs";
 
 type PluginName = "angular";
 const PLUGIN_NAME: PluginName = "angular";
@@ -296,11 +297,15 @@ class ServerlessAngular {
       { logger }
     );
 
+    const output = watch
+      ? await firstValueFrom(scheduleTargetRun.output)
+      : await scheduleTargetRun.lastOutput;
+
+    if (!output.success) {
+      throw new Error(`Compilation Error: ${(output && output.error) || ""}`);
+    }
+
     if (!watch) {
-      const output = await scheduleTargetRun.lastOutput;
-      if (!output.success) {
-        throw new Error(`Compilation Error: ${(output && output.error) || ""}`);
-      }
       return;
     }
 
