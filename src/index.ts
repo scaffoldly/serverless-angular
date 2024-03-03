@@ -4,6 +4,7 @@ import { WorkspaceNodeModulesArchitectHost } from "@angular-devkit/architect/nod
 import { NodeJsSyncHost } from "@angular-devkit/core/node";
 import { workspaces, logging } from "@angular-devkit/core";
 import { Architect } from "@angular-devkit/architect";
+import { ApplicationBuilderOptions } from "@angular-devkit/build-angular";
 
 type PluginName = "angular";
 const PLUGIN_NAME: PluginName = "angular";
@@ -264,23 +265,23 @@ class ServerlessReact {
       );
     }
 
-    const project = workspace.projects.get(projectName);
-    if (!project) {
-      throw new Error(`${projectName} does not exist`);
-    }
+    // const project = workspace.projects.get(projectName);
+    // if (!project) {
+    //   throw new Error(`${projectName} does not exist`);
+    // }
 
-    const buildTarget = project.targets.get("build");
-    if (!buildTarget) {
-      throw new Error("build target does not exist");
-    }
+    // const buildTarget = project.targets.get("build");
+    // if (!buildTarget) {
+    //   throw new Error("build target does not exist");
+    // }
 
     const architect = new Architect(architectHost);
 
-    const projectMetadata = await architectHost.getProjectMetadata(projectName);
+    // const projectMetadata = await architectHost.getProjectMetadata(projectName);
 
-    if (!projectMetadata) {
-      throw new Error(`projectMetadata does not exist`);
-    }
+    // if (!projectMetadata) {
+    //   throw new Error(`projectMetadata does not exist`);
+    // }
 
     const logger = new logging.Logger(PLUGIN_NAME);
     logger.subscribe((entry) => {
@@ -293,7 +294,9 @@ class ServerlessReact {
         project: projectName,
         target: "build",
       },
-      {},
+      {
+        outputPath: this.outputPath,
+      },
       { logger }
     );
 
