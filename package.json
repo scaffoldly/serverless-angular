@@ -1,6 +1,6 @@
 {
   "name": "serverless-angular",
-  "version": "0.2.8-28",
+  "version": "0.2.8-29",
   "engines": {
     "node": ">=18"
   },
