@@ -296,12 +296,11 @@ class ServerlessAngular {
       { logger }
     );
 
-    const output = await scheduleTargetRun.output.toPromise();
-    if (!output || !output.success) {
-      throw new Error(`Compilation Error: ${(output && output.error) || ""}`);
-    }
-
     if (!watch) {
+      const output = await scheduleTargetRun.lastOutput;
+      if (!output.success) {
+        throw new Error(`Compilation Error: ${(output && output.error) || ""}`);
+      }
       return;
     }
 
