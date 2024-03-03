@@ -86,8 +86,6 @@ class Log {
   verbose = (message: string) => {
     if (this.options.log) {
       this.options.log.verbose(Log.msg(message));
-    } else {
-      console.log(Log.msg(message));
     }
   };
 
@@ -108,11 +106,25 @@ class Log {
   };
 
   ngLog = (entry: logging.LogEntry) => {
-    // TODO: use level
-    if (this.options.log) {
-      this.options.log.error(Log.msg(entry.message));
-    } else {
-      console.error(Log.msg(entry.message));
+    switch (entry.level) {
+      case "debug":
+        this.verbose(entry.message);
+        break;
+      case "info":
+        this.log(entry.message);
+        break;
+      case "warn":
+        this.warning(entry.message);
+        break;
+      case "error":
+        this.error(entry.message);
+        break;
+      case "fatal":
+        this.error(entry.message);
+        break;
+      default:
+        this.log(entry.message);
+        break;
     }
   };
 }
@@ -135,8 +147,6 @@ class ServerlessAngular {
       (this.serverless.service.custom &&
         this.serverless.service.custom[PLUGIN_NAME]) ||
       {};
-
-    console.log("!!!! options", options);
 
     this.log = new Log(options);
 
@@ -264,27 +274,10 @@ class ServerlessAngular {
       );
     }
 
-    // const project = workspace.projects.get(projectName);
-    // if (!project) {
-    //   throw new Error(`${projectName} does not exist`);
-    // }
-
-    // const buildTarget = project.targets.get("build");
-    // if (!buildTarget) {
-    //   throw new Error("build target does not exist");
-    // }
-
     const architect = new Architect(architectHost);
-
-    // const projectMetadata = await architectHost.getProjectMetadata(projectName);
-
-    // if (!projectMetadata) {
-    //   throw new Error(`projectMetadata does not exist`);
-    // }
 
     const logger = new logging.Logger(PLUGIN_NAME);
     logger.subscribe((entry) => {
-      console.log("!!! entry.level", entry.level);
       this.log.ngLog(entry);
     });
 
@@ -296,23 +289,30 @@ class ServerlessAngular {
       },
       {
         outputPath: this.outputPath,
+        progress: false,
         watch,
       },
       { logger }
     );
 
-    scheduleTargetRun.output.subscribe((event) => {
-      if (!watch && !event.success) {
-        throw new Error(`Compilation Error: ${event.error || ""}`);
-      }
+    if (watch) {
+      scheduleTargetRun.output.subscribe((event) => {
+        if (event.success) {
+          return;
+        }
 
-      if (event.success) {
-        this.log.log(`Watching for changes...`);
-        return;
-      }
+        this.log.warning(`Compilation Error: ${event.error || ""}`);
+      });
 
-      this.log.warning(`Compilation Error: ${event.error || ""}`);
-    });
+      return;
+    }
+
+    const output = await scheduleTargetRun.lastOutput;
+    if (output.success) {
+      return;
+    }
+
+    throw new Error(`Compilation Error: ${output.error || ""}`);
   };
 }
 
