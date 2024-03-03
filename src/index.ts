@@ -235,7 +235,7 @@ class ServerlessReact {
 
   buildWithAngularDevkit = async (
     mode: BuildMode,
-    _watch: boolean
+    watch: boolean
   ): Promise<void> => {
     const host = new NodeJsSyncHost();
 
@@ -295,6 +295,7 @@ class ServerlessReact {
       },
       {
         outputPath: this.outputPath,
+        watch,
       },
       { logger }
     );
