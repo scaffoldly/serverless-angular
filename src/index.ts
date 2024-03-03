@@ -295,24 +295,22 @@ class ServerlessAngular {
       { logger }
     );
 
-    if (watch) {
-      scheduleTargetRun.output.subscribe((event) => {
-        if (event.success) {
-          return;
-        }
+    const output = await scheduleTargetRun.output.toPromise();
+    if (!output || !output.success) {
+      throw new Error(`Compilation Error: ${(output && output.error) || ""}`);
+    }
 
-        this.log.warning(`Compilation Error: ${event.error || ""}`);
-      });
-
+    if (!watch) {
       return;
     }
 
-    const output = await scheduleTargetRun.lastOutput;
-    if (output.success) {
-      return;
-    }
+    scheduleTargetRun.output.subscribe((event) => {
+      if (event.success) {
+        return;
+      }
 
-    throw new Error(`Compilation Error: ${output.error || ""}`);
+      this.log.warning(`Compilation Error: ${event.error || ""}`);
+    });
   };
 }
 
