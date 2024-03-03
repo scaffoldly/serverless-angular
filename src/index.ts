@@ -284,6 +284,7 @@ class ServerlessReact {
 
     const logger = new logging.Logger(PLUGIN_NAME);
     logger.subscribe((entry) => {
+      console.log("!!! entry.level", entry.level);
       this.log.ngLog(entry);
     });
 
@@ -300,11 +301,13 @@ class ServerlessReact {
       { logger }
     );
 
-    const scheduleTargetLastOutput = await scheduleTargetRun.lastOutput;
-
-    if (scheduleTargetLastOutput.error) {
-      throw new Error(scheduleTargetLastOutput.error);
-    }
+    scheduleTargetRun.output.subscribe((event) => {
+      if (!event.success && watch) {
+        this.log.warning(`Compilation Error: ${event.error || ""}`);
+        return;
+      }
+      throw new Error(`Compilation Error: ${event.error || ""}`);
+    });
   };
 }
 
