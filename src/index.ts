@@ -116,6 +116,15 @@ class Log {
       console.error(Log.msg(message));
     }
   };
+
+  ngLog = (entry: logging.LogEntry) => {
+    // TODO: use level
+    if (this.options.log) {
+      this.options.log.error(Log.msg(entry.message));
+    } else {
+      console.error(Log.msg(entry.message));
+    }
+  };
 }
 
 class ServerlessReact {
@@ -273,16 +282,6 @@ class ServerlessReact {
       throw new Error("build target does not exist");
     }
 
-    // console.log("!!! buildTarget", buildTarget);
-
-    // const builderInfo = await architectHost.resolveBuilder(buildTarget.builder);
-
-    // console.log("!!! builderInfo", builderInfo);
-
-    // const builder = await architectHost.loadBuilder(builderInfo);
-
-    // console.log("!!! builder", builder);
-
     const architect = new Architect(architectHost);
 
     const projectMetadata = await architectHost.getProjectMetadata(projectName);
@@ -291,23 +290,9 @@ class ServerlessReact {
       throw new Error(`projectMetadata does not exist`);
     }
 
-    console.log("!!! projectMetadata", projectMetadata);
-
-    // const targetOptions = await architectHost.getOptionsForTarget({
-    //   configuration: "",
-    //   project: projectName,
-    //   target: "build",
-    // });
-
-    // if (!targetOptions) {
-    //   throw new Error(`targetOptions does not exist`);
-    // }
-
-    // console.log("!!! targetOptions", targetOptions);
-
     const logger = new logging.Logger(PLUGIN_NAME);
     logger.subscribe((entry) => {
-      console.log(entry.message);
+      this.log.ngLog(entry);
     });
 
     const scheduleTargetRun = await architect.scheduleTarget(
@@ -324,46 +309,9 @@ class ServerlessReact {
     const scheduleTargetLastOutput = await scheduleTargetRun.lastOutput;
     console.log("!!! scheduleTargetLastOutput", scheduleTargetLastOutput);
 
-    // const scheduleBuilderRun = await architect.scheduleBuilder(
-    //   buildTarget.builder,
-    //   targetOptions
-    // );
-
-    // console.log("!!! scheduleBuilderRun", scheduleBuilderRun);
-    // const scheduleBuilderLastOutput = await scheduleBuilderRun.lastOutput;
-    // console.log("!!! scheduleBuilderLastOutput", scheduleBuilderLastOutput);
-
-    // const host = workspaces.createWorkspaceHost(new NodeJsSyncHost());
-
-    // const { workspace } = await workspaces.readWorkspace(angularJsonPath, host);
-
-    // console.log("!!!! workspace", workspace);
-
-    // const project = workspace.projects.get(projectName);
-    // if (!project) {
-    //   throw new Error(`${projectName} does not exist`);
-    // }
-
-    // console.log("!!!! project", project);
-
-    // console.log("!!!! buildTarget", buildTarget);
-
-    // buildTarget.options.optimization = true;
-    // buildApplication({});
-    // const vite = await import("vite");
-    // const { entryPoint } = this.pluginConfig;
-    // await vite.build({
-    //   mode,
-    //   configFile: this.pluginConfig.vite?.configFile,
-    //   build: {
-    //     outDir: this.outputPath,
-    //     rollupOptions: {
-    //       input: { app: entryPoint ? entryPoint : "./index.html" },
-    //     },
-    //     watch: watch ? {} : undefined,
-    //     reportCompressedSize: this.options.verbose,
-    //   },
-    // });
+    if (scheduleTargetLastOutput.error) {
+      throw new Error(scheduleTargetLastOutput.error);
+    }
   };
 }
 
