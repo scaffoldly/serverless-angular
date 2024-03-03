@@ -210,6 +210,8 @@ class ServerlessReact {
 
     if (buildSystem === "angular-devkit") {
       requiredModules.push("@angular-devkit");
+      requiredModules.push("@angular/compiler");
+      requiredModules.push("@angular/compiler-cli");
     }
 
     const hasModules = requiredModules.every((module) =>
@@ -305,9 +307,7 @@ class ServerlessReact {
       { logger }
     );
 
-    console.log("!!! scheduleTargetRun", scheduleTargetRun);
     const scheduleTargetLastOutput = await scheduleTargetRun.lastOutput;
-    console.log("!!! scheduleTargetLastOutput", scheduleTargetLastOutput);
 
     if (scheduleTargetLastOutput.error) {
       throw new Error(scheduleTargetLastOutput.error);
