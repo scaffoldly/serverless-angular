@@ -117,7 +117,7 @@ class Log {
   };
 }
 
-class ServerlessReact {
+class ServerlessAngular {
   log: Log;
 
   serverless: Serverless;
@@ -302,13 +302,18 @@ class ServerlessReact {
     );
 
     scheduleTargetRun.output.subscribe((event) => {
-      if (!event.success && watch) {
-        this.log.warning(`Compilation Error: ${event.error || ""}`);
+      if (!watch && !event.success) {
+        throw new Error(`Compilation Error: ${event.error || ""}`);
+      }
+
+      if (event.success) {
+        this.log.log(`Watching for changes...`);
         return;
       }
-      throw new Error(`Compilation Error: ${event.error || ""}`);
+
+      this.log.warning(`Compilation Error: ${event.error || ""}`);
     });
   };
 }
 
-module.exports = ServerlessReact;
+module.exports = ServerlessAngular;
