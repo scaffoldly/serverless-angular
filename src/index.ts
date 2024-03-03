@@ -234,7 +234,7 @@ class ServerlessReact {
   };
 
   buildWithAngularDevkit = async (
-    _mode: BuildMode,
+    mode: BuildMode,
     _watch: boolean
   ): Promise<void> => {
     const host = new NodeJsSyncHost();
@@ -289,7 +289,7 @@ class ServerlessReact {
 
     const scheduleTargetRun = await architect.scheduleTarget(
       {
-        configuration: "",
+        configuration: mode,
         project: projectName,
         target: "build",
       },
