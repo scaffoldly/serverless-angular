@@ -4,7 +4,6 @@ import { WorkspaceNodeModulesArchitectHost } from "@angular-devkit/architect/nod
 import { NodeJsSyncHost } from "@angular-devkit/core/node";
 import { workspaces, logging } from "@angular-devkit/core";
 import { Architect } from "@angular-devkit/architect";
-import { ApplicationBuilderOptions } from "@angular-devkit/build-angular";
 
 type PluginName = "angular";
 const PLUGIN_NAME: PluginName = "angular";
