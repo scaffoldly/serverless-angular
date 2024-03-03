@@ -106,24 +106,25 @@ class Log {
   };
 
   ngLog = (entry: logging.LogEntry) => {
+    const message = entry.message.trim();
     switch (entry.level) {
       case "debug":
-        this.verbose(entry.message);
+        this.verbose(message);
         break;
       case "info":
-        this.log(entry.message);
+        this.log(message);
         break;
       case "warn":
-        this.warning(entry.message);
+        this.warning(message);
         break;
       case "error":
-        this.error(entry.message);
+        this.error(message);
         break;
       case "fatal":
-        this.error(entry.message);
+        this.error(message);
         break;
       default:
-        this.log(entry.message);
+        this.log(message);
         break;
     }
   };
